@@ -1,8 +1,11 @@
 import tkinter
+import tkinter.font
 import platform
-
-HSTEP, VSTEP = 13, 18
-SCROLL_STEP = 100
+import sys
+from ui.text import Text
+from ui.tag import Tag
+from config.constants import *
+from ui.layout import Layout
 
 
 class Browser:
@@ -10,8 +13,10 @@ class Browser:
     def __init__(self):
         self.scroll = 0
         self.window = tkinter.Tk()
+        self.bi_times = tkinter.font.Font(family="Times", size=16, weight="bold")
         self.canvas = tkinter.Canvas(self.window)
         self.canvas.pack(fill="both", expand=True)
+        # self.img = tkinter.PhotoImage(file="./emojis/1F600.png")
 
         self.window.bind("<Down>", self.scroll_down)
         self.window.bind("<Up>", self.scroll_up)
@@ -31,7 +36,8 @@ class Browser:
     def canvas_resize(self, e):
         self.width = e.width
         self.height = e.height
-        self.display_list = layout(self.text, self.width)
+
+        self.display_list = Layout(self.text, self.width)
         self.draw()
 
     def scroll_by_mousewheel_mac(self, e):
@@ -56,50 +62,49 @@ class Browser:
 
     def draw(self):
         self.canvas.delete("all")
+        # self.canvas.create_image(0, 0, image=self.img, anchor="nw")
         if not hasattr(self, "height") or not hasattr(self, "width"):
             self.width = self.canvas.winfo_width()
             self.height = self.canvas.winfo_height()
 
-        for x, y, c in self.display_list:
+        for x, y, c, font in self.display_list:
+            print("Display ==========>>>>", x, y, c, font)
             if y > self.scroll + self.height:
                 continue
             if y + VSTEP < self.scroll:
                 continue
 
-            self.canvas.create_text(x, y - self.scroll, text=c)
+            self.canvas.create_text(x, y - self.scroll, text=c, font=font, anchor="nw")
 
     def lex(self, body):
-        text = ""
+        out = []
+        buffer = ""
         in_tag = False
         for c in body:
             if c == "<":
                 in_tag = True
+                if buffer:
+                    out.append(Text(buffer))
+                    buffer = ""
             elif c == ">":
                 in_tag = False
-            elif not in_tag:
-                text += c
-        return text
+                out.append(Tag(buffer))
+                buffer = ""
+            else:
+                buffer += c
+
+        if not in_tag and buffer:
+            out.append(Text(buffer))
+        return out
 
     def load(self, url):
         body = url.request()
         self.text = self.lex(body)
 
-        self.display_list = layout(self.text, 800)
+        if not hasattr(self, "width"):
+            self.width = self.canvas.winfo_width()
+
+        tokens = self.lex(body)
+        layout = Layout(tokens, self.width)
+        self.display_list = layout.display_list
         self.draw()
-
-
-def layout(text, width):
-    display_list = []
-    cursor_x, cursor_y = HSTEP, VSTEP
-
-    for c in text:
-        if c == "\n":
-            cursor_x = HSTEP
-            cursor_y += VSTEP
-        display_list.append((cursor_x, cursor_y, c))
-        cursor_x += HSTEP
-
-        if cursor_x >= width - HSTEP:
-            cursor_x = HSTEP
-            cursor_y += VSTEP
-    return display_list

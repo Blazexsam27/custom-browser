@@ -6,6 +6,8 @@ from browser import Browser
 
 class URL:
     def __init__(self, url):
+
+        assert "://" in url
         self.scheme, url = url.split("://", 1)
         assert self.scheme in ["http", "https"]
 

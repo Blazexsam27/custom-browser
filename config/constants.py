@@ -1,0 +1,7 @@
+# config.py
+HSTEP = 13
+VSTEP = 18
+SCROLL_STEP = 100
+
+WIDTH = 800
+HEIGHT = 800
