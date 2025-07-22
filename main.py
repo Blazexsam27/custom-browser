@@ -2,6 +2,7 @@ import socket
 import ssl
 import tkinter
 from browser import Browser
+from core.parser import HTMLParser, print_tree
 
 
 class URL:
@@ -65,5 +66,7 @@ class URL:
 if __name__ == "__main__":
     import sys
 
-    Browser().load(URL(sys.argv[1]))
+    body = URL(sys.argv[1]).request()
+    nodes = HTMLParser(body).parse()
+    print_tree(nodes)
     tkinter.mainloop()

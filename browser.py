@@ -1,11 +1,9 @@
 import tkinter
 import tkinter.font
 import platform
-import sys
-from ui.text import Text
-from ui.tag import Tag
 from config.constants import *
 from ui.layout import Layout
+from core.parser import HTMLParser
 
 
 class Browser:
@@ -37,7 +35,7 @@ class Browser:
         self.width = e.width
         self.height = e.height
 
-        self.display_list = Layout(self.text, self.width)
+        self.display_list = Layout(self.text, self.width).display_list
         self.draw()
 
     def scroll_by_mousewheel_mac(self, e):
@@ -66,9 +64,7 @@ class Browser:
         if not hasattr(self, "height") or not hasattr(self, "width"):
             self.width = self.canvas.winfo_width()
             self.height = self.canvas.winfo_height()
-
         for x, y, c, font in self.display_list:
-            print("Display ==========>>>>", x, y, c, font)
             if y > self.scroll + self.height:
                 continue
             if y + VSTEP < self.scroll:
@@ -77,34 +73,15 @@ class Browser:
             self.canvas.create_text(x, y - self.scroll, text=c, font=font, anchor="nw")
 
     def lex(self, body):
-        out = []
-        buffer = ""
-        in_tag = False
-        for c in body:
-            if c == "<":
-                in_tag = True
-                if buffer:
-                    out.append(Text(buffer))
-                    buffer = ""
-            elif c == ">":
-                in_tag = False
-                out.append(Tag(buffer))
-                buffer = ""
-            else:
-                buffer += c
-
-        if not in_tag and buffer:
-            out.append(Text(buffer))
-        return out
+        parser = HTMLParser(body)
+        return parser.parse()
 
     def load(self, url):
         body = url.request()
-        self.text = self.lex(body)
 
         if not hasattr(self, "width"):
             self.width = self.canvas.winfo_width()
 
-        tokens = self.lex(body)
-        layout = Layout(tokens, self.width)
-        self.display_list = layout.display_list
+        self.nodes = HTMLParser(body).parse()
+        self.display_list = Layout(self.nodes, self.width).display_list
         self.draw()
