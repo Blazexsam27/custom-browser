@@ -22,3 +22,15 @@ SELF_CLOSING_TAGS = [
     "track",
     "wbr",
 ]
+
+HEAD_TAGS = [
+    "base",
+    "basefont",
+    "bgsound",
+    "noscript",
+    "link",
+    "meta",
+    "title",
+    "style",
+    "script",
+]

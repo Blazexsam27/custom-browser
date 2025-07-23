@@ -40,11 +40,10 @@ class Layout:
             self.size -= 2
         elif tag == "big":
             self.size += 4
-        elif tag.startswith("h1"):
-            self.flush()
+        elif tag == "h1":
             self.size += 12
             self.weight = "bold"
-            # self.centered = tag.get("class") == "title"
+            self.flush()
         elif tag == "br":
             self.flush()
         elif tag == "sup":
@@ -53,27 +52,26 @@ class Layout:
             self.flush()
 
     def close_tag(self, tag):
-        if tag == "/i":
+        if tag == "i":
             self.style = "roman"
-        elif tag == "/b":
+        elif tag == "b":
             self.weight = "normal"
-        elif tag == "/small":
+        elif tag == "small":
             self.size += 2
-        elif tag == "/big":
+        elif tag == "big":
             self.size -= 4
-        elif tag == "/h1":
-            self.flush()
+        elif tag == "h1":
             self.size -= 12
             self.weight = "normal"
             self.centered = False
             self.cursor_y += VSTEP
-
+            self.flush()
         elif tag == "br":
             self.flush()
-        elif tag == "/p":
-            self.flush()
+        elif tag == "p":
             self.cursor_y += VSTEP
-        elif tag == "/sup":
+            self.flush()
+        elif tag == "sup":
             self.size += 4
             self.supscript = False
             self.flush()

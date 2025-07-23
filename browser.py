@@ -69,10 +69,6 @@ class Browser:
 
             self.canvas.create_text(x, y - self.scroll, text=c, font=font, anchor="nw")
 
-    def lex(self, body):
-        parser = HTMLParser(body)
-        return parser.parse()
-
     def load(self, url):
         body = url.request()
 
@@ -80,5 +76,6 @@ class Browser:
             self.width = self.canvas.winfo_width()
 
         self.nodes = HTMLParser(body).parse()
+        print("Nodes ====>>", self.nodes)
         self.display_list = Layout(self.nodes, self.width).display_list
         self.draw()

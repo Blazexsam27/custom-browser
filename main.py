@@ -65,6 +65,6 @@ class URL:
 if __name__ == "__main__":
     import sys
 
-    tk = tkinter.Tk()
-    Browser().load(URL(sys.argv[1]))
-    tk.mainloop()
+    browser = Browser()
+    browser.load(URL(sys.argv[1]))
+    browser.window.mainloop()
