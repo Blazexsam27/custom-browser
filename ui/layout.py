@@ -41,12 +41,10 @@ class Layout:
         elif tag == "big":
             self.size += 4
         elif tag.startswith("h1"):
-            tag_name, attrs = Element.parse_tag(tag)
-            if tag_name == "h1":
-                self.flush()
-                self.size += 12
-                self.weight = "bold"
-                self.centered = attrs.get("class") == "title"
+            self.flush()
+            self.size += 12
+            self.weight = "bold"
+            # self.centered = tag.get("class") == "title"
         elif tag == "br":
             self.flush()
         elif tag == "sup":

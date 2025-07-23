@@ -14,7 +14,6 @@ class Browser:
         self.bi_times = tkinter.font.Font(family="Times", size=16, weight="bold")
         self.canvas = tkinter.Canvas(self.window)
         self.canvas.pack(fill="both", expand=True)
-        # self.img = tkinter.PhotoImage(file="./emojis/1F600.png")
 
         self.window.bind("<Down>", self.scroll_down)
         self.window.bind("<Up>", self.scroll_up)
@@ -29,13 +28,11 @@ class Browser:
             self.window.bind("<Button-4>", self.scroll_up)
             self.window.bind("<Button-5>", self.scroll_down)
 
-        self.canvas.pack()
-
     def canvas_resize(self, e):
         self.width = e.width
         self.height = e.height
 
-        self.display_list = Layout(self.text, self.width).display_list
+        self.display_list = Layout(self.nodes, self.width).display_list
         self.draw()
 
     def scroll_by_mousewheel_mac(self, e):

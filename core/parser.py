@@ -62,7 +62,6 @@ class HTMLParser:
 
     # parses the tag and yeilds its name and attributes
     def parse_tag(self, tag_str):
-
         import re
 
         tag_match = re.match(r"^(\w+)", tag_str)
