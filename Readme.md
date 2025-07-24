@@ -12,3 +12,8 @@
 1. CSS parsing.
 2. More HTML tag support.
 3. Javascript engine support.
+
+### How to use
+``` bash
+python main.py <server-url>
+```
